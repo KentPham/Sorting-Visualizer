@@ -5,24 +5,16 @@ class Visualizer extends Component {
 
     render () {
 
-        let nums = [];
         let barHeight;
         let yTranslate;
 
         let barStyle;
 
-        let rand;
+        let barWidth = 990/this.props.array.length;
 
-        for (let i = 0; i < 400; i++) {
-            rand = Math.round(1 + Math.random() * 100);
-            nums = [...nums, rand]
-        }
-
-        let barWidth = 990/nums.length;
-
-        let bars = nums.map (function(m) {
+        let bars = this.props.array.map ((m) => {
             
-            barHeight = (m/Math.max(...nums))*490;
+            barHeight = (m/Math.max(...this.props.array))*490;
             yTranslate = 495 - barHeight;
 
             barStyle = {
@@ -32,7 +24,7 @@ class Visualizer extends Component {
             }
 
             return (
-            <div className="bar" style={barStyle}></div>
+                <div className="bar" style={barStyle}></div>
             )
         })
 
