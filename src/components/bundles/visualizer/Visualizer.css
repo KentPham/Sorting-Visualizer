@@ -6,5 +6,6 @@
 
  .bar {
      background-color: red;
+     border-width: thin;
      border-style: solid;
  }

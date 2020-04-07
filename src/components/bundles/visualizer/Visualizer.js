@@ -5,32 +5,36 @@ class Visualizer extends Component {
 
     render () {
 
-        let nums = [3, 4, 1, 7, 2, 1, 3, 1];
-        
-        let barheight;
-        let barwidth = 990/nums.length
+        let nums = [];
+        let barHeight;
+        let yTranslate;
 
-        /*let barstyle = {
-            width: `${barwidth}`
-        };*/
+        let barStyle;
 
-        let barstyle;
+        let rand;
+
+        for (let i = 0; i < 400; i++) {
+            rand = Math.round(1 + Math.random() * 100);
+            nums = [...nums, rand]
+        }
+
+        let barWidth = 990/nums.length;
 
         let bars = nums.map (function(m) {
             
-            barheight = (m/Math.max(...nums))*490;
+            barHeight = (m/Math.max(...nums))*490;
+            yTranslate = 495 - barHeight;
 
-            barstyle = {
-                width: `${barwidth}px`,
-                height: `${barheight}px`
+            barStyle = {
+                width: `${barWidth}px`,
+                height: `${barHeight}px`,
+                transform: `translate(2.5px, ${yTranslate}px)`
             }
 
             return (
-            <div className="bar" style={barstyle}>{m}</div>
+            <div className="bar" style={barStyle}></div>
             )
         })
-
-        console.log(bars);
 
         return(
             <div>
