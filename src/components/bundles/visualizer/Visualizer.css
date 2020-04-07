@@ -1,0 +1,10 @@
+ .graph-container {
+     height: 500px;
+     width: 1000px;
+     border-style: solid;
+ }
+
+ .bar {
+     background-color: red;
+     border-style: solid;
+ }
