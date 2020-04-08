@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import Visualizer from "../visualizer";
+import {selectsort} from "../sorts/Selectsort";
 
 class Home extends Component {
 
@@ -13,6 +14,7 @@ class Home extends Component {
 
         this.handleRandomClick = this.handleRandomClick.bind(this);
         this.handleMaxSampleSizeInput = this.handleMaxSampleSizeInput.bind(this);
+        this.handleSortButton = this.handleSortButton.bind(this);
     }
 
     handleRandomClick() {
@@ -37,7 +39,14 @@ class Home extends Component {
         if (input < 1) {
             input = 1;
         }
+
         this.setState({maxSampleSize: input});
+    }
+
+    handleSortButton() {
+        let nums = this.state.nums;
+        let sorted = selectsort(nums);
+        this.setState({nums: sorted});
     }
 
     render () {
@@ -46,6 +55,7 @@ class Home extends Component {
             <div>
                 <input type="number" value={this.state.maxSampleSize} onChange={this.handleMaxSampleSizeInput} />
                 <button onClick={this.handleRandomClick}>Randomize Array</button>
+                <button onClick={this.handleSortButton}>Quicksort</button>
                 <Visualizer array={this.state.nums} />
             </div>
         )
