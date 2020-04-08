@@ -1,6 +1,8 @@
 import React, {Component} from 'react';
 import Visualizer from "../visualizer";
 import {selectsort} from "../sorts/Selectsort";
+import {bubblesort} from "../sorts/Bubblesort";
+import {insertionsort} from "../sorts/Insertionsort";
 
 class Home extends Component {
 
@@ -45,7 +47,9 @@ class Home extends Component {
 
     handleSortButton() {
         let nums = this.state.nums;
-        let sorted = selectsort(nums);
+        //let sorted = selectsort(nums);
+        //let sorted = bubblesort(nums);
+        let sorted = insertionsort(nums);
         this.setState({nums: sorted});
     }
 
