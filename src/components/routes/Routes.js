@@ -8,7 +8,6 @@ class Routes extends Component {
         return (
 
             <Router>
-                <h1>This is a switch header</h1>
                 <Switch>
                     <Route path="/" exact component={Home}/>
                 </Switch>

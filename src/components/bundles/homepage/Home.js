@@ -28,14 +28,22 @@ class Home extends Component {
     }
 
     handleMaxSampleSizeInput(e) {
-        this.setState({maxSampleSize: e.target.value});
+        let input = e.target.value;
+
+        if (input > 400) {
+            input = 400;
+        }
+
+        if (input < 1) {
+            input = 1;
+        }
+        this.setState({maxSampleSize: input});
     }
 
     render () {
 
         return(
             <div>
-                <h1>This is the home page</h1>
                 <input type="number" value={this.state.maxSampleSize} onChange={this.handleMaxSampleSizeInput} />
                 <button onClick={this.handleRandomClick}>Randomize Array</button>
                 <Visualizer array={this.state.nums} />
