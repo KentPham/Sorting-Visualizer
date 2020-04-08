@@ -3,20 +3,35 @@ import Visualizer from "../visualizer";
 
 class Home extends Component {
 
-    render () {
+    constructor(props) {
+        super(props);
 
-        let nums = [];
+        this.state = {
+            nums: []
+        }
+        this.handleRandomClick = this.handleRandomClick.bind(this);
+    }
+
+    handleRandomClick() {
         let rand;
+        let tempNums = [];
 
         for (let i = 0; i < 200; i++) {
             rand = Math.round(1 + Math.random() * 100);
-            nums = [...nums, rand]
+            tempNums = [...tempNums, rand]
         }
 
+        this.setState({nums: [...tempNums]})
+    }
+    render () {
+
+        console.log(this.state.nums);
+        
         return(
             <div>
                 <h1>This is the home page</h1>
-                <Visualizer array={nums} />
+                <button onClick={this.handleRandomClick}>Randomize Array</button>
+                <Visualizer array={this.state.nums} />
             </div>
         )
     }
