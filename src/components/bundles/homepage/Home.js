@@ -3,6 +3,7 @@ import Visualizer from "../visualizer";
 import {selectsort} from "../sorts/Selectsort";
 import {bubblesort} from "../sorts/Bubblesort";
 import {insertionsort} from "../sorts/Insertionsort";
+import {mergesort} from "../sorts/Mergesort";
 
 class Home extends Component {
 
@@ -49,7 +50,8 @@ class Home extends Component {
         let nums = this.state.nums;
         //let sorted = selectsort(nums);
         //let sorted = bubblesort(nums);
-        let sorted = insertionsort(nums);
+        //let sorted = insertionsort(nums);
+        let sorted = mergesort(nums);
         this.setState({nums: sorted});
     }
 
