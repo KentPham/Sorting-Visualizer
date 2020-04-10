@@ -12,7 +12,7 @@ class Home extends Component {
 
         this.state = {
             nums: [],
-            maxSampleSize: 200
+            maxSampleSize: 10
         }
 
         this.handleRandomClick = this.handleRandomClick.bind(this);
