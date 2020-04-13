@@ -12,12 +12,15 @@ class Home extends Component {
 
         this.state = {
             nums: [],
-            maxSampleSize: 10
+            maxSampleSize: 10,
+            delay: 5000,
+            finished: 0
         }
 
         this.handleRandomClick = this.handleRandomClick.bind(this);
         this.handleMaxSampleSizeInput = this.handleMaxSampleSizeInput.bind(this);
         this.handleSortButton = this.handleSortButton.bind(this);
+        this.handleBubbleSortButton = this.handleBubbleSortButton.bind(this);
     }
 
     handleRandomClick() {
@@ -48,11 +51,34 @@ class Home extends Component {
 
     handleSortButton() {
         let nums = this.state.nums;
-        //let sorted = selectsort(nums);
-        //let sorted = bubblesort(nums);
-        //let sorted = insertionsort(nums);
         let sorted = mergesort(nums);
         this.setState({nums: sorted});
+    }
+
+
+    handleBubbleSortButton() {
+        let sorted = this.state.nums;
+        let end = sorted.length - 1;
+        let temp;
+
+        let recurr = (i) => {
+            if (end < 0) {
+                return;
+            } else if (i > end) {
+                i = 0;
+            }
+
+            if (sorted[i] > sorted[i+1]) {
+                temp = sorted[i];
+                sorted[i] = sorted[i+1];
+                sorted[i+1] = temp;
+                this.setState({nums: sorted});
+            }
+
+            i++;
+            setTimeout(() => recurr(i), 50);
+        }
+        recurr(0);
     }
 
     render () {
@@ -61,6 +87,7 @@ class Home extends Component {
             <div>
                 <input type="number" value={this.state.maxSampleSize} onChange={this.handleMaxSampleSizeInput} />
                 <button onClick={this.handleRandomClick}>Randomize Array</button>
+                <button onClick={this.handleBubbleSortButton}>Bubble Sort</button>
                 <button onClick={this.handleSortButton}>Quicksort</button>
                 <Visualizer array={this.state.nums} />
             </div>
