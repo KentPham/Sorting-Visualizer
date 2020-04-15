@@ -9,7 +9,7 @@ class Home extends Component {
         this.state = {
             nums: [],
             maxSampleSize: 10,
-            delay: 10,
+            delay: 500,
             finished: 0
         }
 
@@ -50,7 +50,7 @@ class Home extends Component {
         let end = sorted.length - 1;
         let temp;
 
-        let recur = (i) => {
+        let bubbleSort = (i) => {
             if (end < 0) {
                 return;
             } else if (i > end) {
@@ -65,9 +65,10 @@ class Home extends Component {
             }
 
             i++;
-            setTimeout(() => recur(i), this.state.delay);
+            setTimeout(() => bubbleSort(i), this.state.delay);
         }
-        recur(0);
+
+        bubbleSort(0);
     }
 
     handleSelectSort() {
@@ -88,7 +89,7 @@ class Home extends Component {
             return findIndex(i, ind);
         }
         
-        let recur = (i) => {
+        let selectSort = (i) => {
             if (i > sorted.length - 1) {
                 return;
             }
@@ -102,9 +103,10 @@ class Home extends Component {
             }
 
             i++;
-            setTimeout(() => recur(i), this.state.delay);
+            setTimeout(() => selectSort(i), this.state.delay);
         }
-        recur(0);
+
+        selectSort(0);
     }
 
     handleInsertionSort() {
@@ -118,28 +120,48 @@ class Home extends Component {
             sorted[0] = temp;
         }
 
-        let findIndex = (i, start) => {
-        }
-
-        /*
-        for (let i = 2; i < nums.length; i++) {
-            if (nums[i] < nums[i-1]) {
-                for (let j = 0; j < i; j++) {
-                    if (nums[i] < nums[j]) {
-                        index = j;
-                        break;
-                    }
-                }
-                temp = nums[i];
-                for (let j = i; j > index; j--) {
-                    nums[j] = nums[j-1];
-                }
-                nums[index] = temp;
+        let findIndex = (i, end) => {
+            if (i > end) {
+                return i;
             }
+
+            if (sorted[end] < sorted[i]) {
+                return i;
+            }
+
+            i++;
+            return findIndex(i, end)
         }
 
-        return nums;
-        */
+        let pushElements = (i, index) => {
+            if (i < index) {
+                return;
+            }
+
+            sorted[i] = sorted[i-1];
+            this.setState({nums: sorted});
+
+            i--;
+            return pushElements(i, index);
+        }
+
+        let insertionSort = (i) => {
+            if (i > sorted.length - 1) {
+                return;
+            }
+            if (sorted[i] < sorted[i-1]) {
+                index = findIndex(0, i);
+                temp = sorted[i];
+                pushElements(i, index);
+                sorted[index] = temp;
+                this.setState({nums: sorted});
+            }
+
+            i++;
+            setTimeout(() => insertionSort(i), this.state.delay);
+        }
+
+        insertionSort(2);
     }
 
     render () {
