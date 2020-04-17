@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import "./Home.css";
 import Visualizer from "../visualizer";
 
 class Home extends Component {
@@ -8,8 +9,9 @@ class Home extends Component {
 
         this.state = {
             nums: [],
+            highlighted: [],
             maxSampleSize: 10,
-            delay: 500,
+            delay: 1000,
             finished: 0
         }
 
@@ -18,6 +20,13 @@ class Home extends Component {
         this.handleBubbleSort = this.handleBubbleSort.bind(this);
         this.handleSelectSort = this.handleSelectSort.bind(this);
         this.handleInsertionSort = this.handleInsertionSort.bind(this);
+    }
+
+    generateHighlight(nums) {
+        let temp = [...nums];
+        for (let i = 0; i < nums.length; i++) {
+            temp[i] = 0;
+        }
     }
 
     handleRandomClick() {
@@ -47,15 +56,30 @@ class Home extends Component {
 
     handleBubbleSort() {
         let sorted = this.state.nums;
+        let highlight = this.state.highlighted;
         let end = sorted.length - 1;
         let temp;
 
+        this.generateHighlight(this.state.nums);
+
         let bubbleSort = (i) => {
-            if (end < 0) {
+            if (i > end) {
+                for (let j = 0; j < highlight.length; j++) {
+                    highlight[j] = 0;
+                }
+                this.setState({highlighted: highlight});
                 return;
-            } else if (i > end) {
+            } else if (i > end - 1) {
                 i = 0;
+                end--;
             }
+
+            for (let j = 0; j < highlight.length; j++) {
+                highlight[j] = 0;
+            }
+            highlight[i] = 1;
+            highlight[i+1] = 1;
+
 
             if (sorted[i] > sorted[i+1]) {
                 temp = sorted[i];
@@ -64,6 +88,7 @@ class Home extends Component {
                 this.setState({nums: sorted});
             }
 
+            this.setState({highlighted: highlight});
             i++;
             setTimeout(() => bubbleSort(i), this.state.delay);
         }
@@ -73,24 +98,43 @@ class Home extends Component {
 
     handleSelectSort() {
         let sorted = this.state.nums;
+        let highlight = this.state.highlighted;
         let temp;
         let index;
 
+        this.generateHighlight(this.state.nums);
+
         let findIndex = (i, ind) => {
             if (i > sorted.length - 1) {
+                for (let j = 0; j < highlight.length; j++) {
+                    highlight[j] = 0;
+                }
+                highlight[ind] = 1;
+                this.setState({highlighted: highlight});
                 return ind;
             }
 
+            for (let j = 0; j < highlight.length; j++) {
+                highlight[j] = 0;
+            }
+            highlight[i] = 2;
+
             if (sorted[i] < sorted[ind]) {
                 ind = i;
+                highlight[i] = 1;
             }
 
+            this.setState({highlighted: highlight});
             i++;
             return findIndex(i, ind);
         }
         
         let selectSort = (i) => {
             if (i > sorted.length - 1) {
+                for (let j = 0; j < highlight.length; j++) {
+                    highlight[j] = 0;
+                }
+                this.setState({highlighted: highlight});
                 return;
             }
             
@@ -111,8 +155,11 @@ class Home extends Component {
 
     handleInsertionSort() {
         let sorted = this.state.nums;
+        let highlight = this.state.highlighted;
         let temp;
         let index;
+
+        this.generateHighlight(this.state.nums);
 
         if (sorted[1] < sorted[0]) {
             temp = sorted[1];
@@ -147,6 +194,10 @@ class Home extends Component {
 
         let insertionSort = (i) => {
             if (i > sorted.length - 1) {
+                for (let j = 0; j < highlight.length; j++) {
+                    highlight[j] = 0;
+                }
+                this.setState({highlighted: highlight});
                 return;
             }
             if (sorted[i] < sorted[i-1]) {
@@ -167,13 +218,20 @@ class Home extends Component {
     render () {
 
         return(
-            <div>
-                <input type="number" value={this.state.maxSampleSize} onChange={this.handleMaxSampleSizeInput} />
-                <button onClick={this.handleRandomClick}>Randomize Array</button>
-                <button onClick={this.handleBubbleSort}>Bubble Sort</button>
-                <button onClick={this.handleSelectSort}>Select Sort</button>
-                <button onClick={this.handleInsertionSort}>Insertion Sort</button>
-                <Visualizer array={this.state.nums} />
+            <div class="container body-container">
+                <div class="row home-flex">
+                    <div class="col-6 col-flex">
+                        <span>Array Size: </span>
+                        <input type="number" value={this.state.maxSampleSize} onChange={this.handleMaxSampleSizeInput} />
+                        <button class="visualizer-button-format" onClick={this.handleRandomClick}>Randomize</button>
+                    </div>
+                    <div class="col-6 col-flex">
+                        <button class="visualizer-button-format" onClick={this.handleBubbleSort}>Bubble</button>
+                        <button class="visualizer-button-format" onClick={this.handleSelectSort}>Select</button>
+                        <button class="visualizer-button-format" onClick={this.handleInsertionSort}>Insertion</button>
+                    </div>
+                </div>
+                <Visualizer array={this.state.nums} highlighted={this.state.highlighted} />
             </div>
         )
     }

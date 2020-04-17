@@ -1,0 +1,20 @@
+.body-container {
+    width: 1050px;
+    border-style: solid;
+}
+
+.home-flex {
+    height: 50px;
+    display: flexbox;
+    border-style: solid;
+}
+
+.col-flex {
+    display: flexbox;
+    align-self: center;
+}
+
+.visualizer-button-format {
+    height: 30px;
+    width: 100px;
+}
