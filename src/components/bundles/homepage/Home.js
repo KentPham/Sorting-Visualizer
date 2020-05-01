@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import "./Home.css";
 import Visualizer from "../visualizer";
+import { bubblesort } from "../sorts/Bubblesort";
 
 class Home extends Component {
 
@@ -11,7 +12,7 @@ class Home extends Component {
             nums: [],
             highlighted: [],
             maxSampleSize: 10,
-            delay: 1000,
+            delay: 1,
             finished: 0
         }
 
@@ -20,6 +21,7 @@ class Home extends Component {
         this.handleBubbleSort = this.handleBubbleSort.bind(this);
         this.handleSelectSort = this.handleSelectSort.bind(this);
         this.handleInsertionSort = this.handleInsertionSort.bind(this);
+        this.handleTestSort = this.handleTestSort.bind(this);
     }
 
     generateHighlight(nums) {
@@ -52,6 +54,10 @@ class Home extends Component {
         }
 
         this.setState({maxSampleSize: input});
+    }
+
+    handleTestSort() {
+        bubblesort(this.state.nums);
     }
 
     handleBubbleSort() {
@@ -104,7 +110,7 @@ class Home extends Component {
 
         this.generateHighlight(this.state.nums);
 
-        let findIndex = (i, ind) => {
+        /*let findIndex = (i, ind) => {
             if (i > sorted.length - 1) {
                 for (let j = 0; j < highlight.length; j++) {
                     highlight[j] = 0;
@@ -126,7 +132,41 @@ class Home extends Component {
 
             this.setState({highlighted: highlight});
             i++;
+            //setTimeout(() => i++, this.state.delay);
             return findIndex(i, ind);
+        }*/
+
+        let findIndex = (i, ind) => {
+            for (let j = 0; j < highlight.length; j++) {
+                highlight[j] = 0;
+            }
+            if (i > sorted.length - 1) {
+                highlight[ind] = 1;
+                this.setState({highlighted: highlight});
+                return ind;
+            }
+
+            console.log(sorted);
+            console.log(i);
+            console.log("Pre")
+            console.log(ind);
+            console.log(sorted[i] < sorted[ind]);
+
+            highlight[i] = 2;
+
+            if (sorted[i] < sorted[ind]) {
+                ind = i;
+                highlight[i] = 1;
+            }
+
+            console.log("Post")
+            console.log(i);
+            console.log(ind);
+
+            this.setState({highlighted: highlight});
+            i++;
+            setTimeout(() => ind = findIndex(i, ind), this.state.delay);
+            return ind;
         }
         
         let selectSort = (i) => {
@@ -138,7 +178,10 @@ class Home extends Component {
                 return;
             }
             
+            console.log("Current select sort index: " + i);
             index = findIndex(i, i);
+            console.log("Solution: " + index);
+            console.log("-------------------");
             if (index !== i) {
                 temp = sorted[i];
                 sorted[i] = sorted[index];
@@ -226,7 +269,7 @@ class Home extends Component {
                         <button class="visualizer-button-format" onClick={this.handleRandomClick}>Randomize</button>
                     </div>
                     <div class="col-6 col-flex">
-                        <button class="visualizer-button-format" onClick={this.handleBubbleSort}>Bubble</button>
+                        <button class="visualizer-button-format" onClick={this.handleTestSort}>Bubble</button>
                         <button class="visualizer-button-format" onClick={this.handleSelectSort}>Select</button>
                         <button class="visualizer-button-format" onClick={this.handleInsertionSort}>Insertion</button>
                     </div>
