@@ -5,33 +5,21 @@ import { bubblesort } from "../sorts/Bubblesort";
 
 class Home extends Component {
 
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            nums: [],
-            highlighted: [],
-            maxSampleSize: 10,
-            delay: 1,
-            finished: 0
-        }
-
-        this.handleRandomClick = this.handleRandomClick.bind(this);
-        this.handleMaxSampleSizeInput = this.handleMaxSampleSizeInput.bind(this);
-        this.handleBubbleSort = this.handleBubbleSort.bind(this);
-        this.handleSelectSort = this.handleSelectSort.bind(this);
-        this.handleInsertionSort = this.handleInsertionSort.bind(this);
-        this.handleTestSort = this.handleTestSort.bind(this);
+    state = {
+        nums: [],
+        highlighted: [],
+        maxSampleSize: 10,
     }
 
-    generateHighlight(nums) {
+    zeroHighlight(nums) {
         let temp = [...nums];
         for (let i = 0; i < nums.length; i++) {
             temp[i] = 0;
         }
+        this.setState({ highlighted: [...temp] });
     }
 
-    handleRandomClick() {
+    handleRandomClick = () => {
         let rand;
         let tempNums = [];
 
@@ -40,10 +28,10 @@ class Home extends Component {
             tempNums = [...tempNums, rand]
         }
 
-        this.setState({nums: [...tempNums]});
+        this.setState({ nums: [...tempNums] });
     }
 
-    handleMaxSampleSizeInput(e) {
+    handleMaxSampleSizeInput = (e) => {
         let input = e.target.value;
 
         if (input > 400) {
@@ -56,225 +44,82 @@ class Home extends Component {
         this.setState({maxSampleSize: input});
     }
 
-    handleTestSort() {
-        bubblesort(this.state.nums);
-    }
-
-    handleBubbleSort() {
-        let sorted = this.state.nums;
-        let highlight = this.state.highlighted;
-        let end = sorted.length - 1;
+    handleTestSort = async () => {
+        let timeline;
         let temp;
+        let index = 0;
+        const { nums } = this.state;
+        this.zeroHighlight(nums);
+        let highlighted = [...this.state.highlighted];
+        timeline = bubblesort(nums);
 
-        this.generateHighlight(this.state.nums);
-
-        let bubbleSort = (i) => {
-            if (i > end) {
-                for (let j = 0; j < highlight.length; j++) {
-                    highlight[j] = 0;
-                }
-                this.setState({highlighted: highlight});
-                return;
-            } else if (i > end - 1) {
-                i = 0;
-                end--;
-            }
-
-            for (let j = 0; j < highlight.length; j++) {
-                highlight[j] = 0;
-            }
-            highlight[i] = 1;
-            highlight[i+1] = 1;
-
-
-            if (sorted[i] > sorted[i+1]) {
-                temp = sorted[i];
-                sorted[i] = sorted[i+1];
-                sorted[i+1] = temp;
-                this.setState({nums: sorted});
-            }
-
-            this.setState({highlighted: highlight});
-            i++;
-            setTimeout(() => bubbleSort(i), this.state.delay);
-        }
-
-        bubbleSort(0);
-    }
-
-    handleSelectSort() {
-        let sorted = this.state.nums;
-        let highlight = this.state.highlighted;
-        let temp;
-        let index;
-
-        this.generateHighlight(this.state.nums);
-
-        /*let findIndex = (i, ind) => {
-            if (i > sorted.length - 1) {
-                for (let j = 0; j < highlight.length; j++) {
-                    highlight[j] = 0;
-                }
-                highlight[ind] = 1;
-                this.setState({highlighted: highlight});
-                return ind;
-            }
-
-            for (let j = 0; j < highlight.length; j++) {
-                highlight[j] = 0;
-            }
-            highlight[i] = 2;
-
-            if (sorted[i] < sorted[ind]) {
-                ind = i;
-                highlight[i] = 1;
-            }
-
-            this.setState({highlighted: highlight});
-            i++;
-            //setTimeout(() => i++, this.state.delay);
-            return findIndex(i, ind);
-        }*/
-
-        let findIndex = (i, ind) => {
-            for (let j = 0; j < highlight.length; j++) {
-                highlight[j] = 0;
-            }
-            if (i > sorted.length - 1) {
-                highlight[ind] = 1;
-                this.setState({highlighted: highlight});
-                return ind;
-            }
-
-            console.log(sorted);
-            console.log(i);
-            console.log("Pre")
-            console.log(ind);
-            console.log(sorted[i] < sorted[ind]);
-
-            highlight[i] = 2;
-
-            if (sorted[i] < sorted[ind]) {
-                ind = i;
-                highlight[i] = 1;
-            }
-
-            console.log("Post")
-            console.log(i);
-            console.log(ind);
-
-            this.setState({highlighted: highlight});
-            i++;
-            setTimeout(() => ind = findIndex(i, ind), this.state.delay);
-            return ind;
-        }
-        
-        let selectSort = (i) => {
-            if (i > sorted.length - 1) {
-                for (let j = 0; j < highlight.length; j++) {
-                    highlight[j] = 0;
-                }
-                this.setState({highlighted: highlight});
-                return;
-            }
+        while (true) {
+            this.zeroHighlight(nums);
+            highlighted = [...this.state.highlighted];
+            highlighted[timeline[index][0]] = 1;
+            highlighted[timeline[index][1]] = 1;
+            this.setState({ highlighted: [...highlighted] });
             
-            console.log("Current select sort index: " + i);
-            index = findIndex(i, i);
-            console.log("Solution: " + index);
-            console.log("-------------------");
-            if (index !== i) {
-                temp = sorted[i];
-                sorted[i] = sorted[index];
-                sorted[index] = temp;
-                this.setState({nums: sorted});
+            await new Promise(resolve => setTimeout(resolve, 500));
+
+            if (timeline[index][2] === 1) {
+                temp = nums[timeline[index][0]];
+                nums[timeline[index][0]] = nums[timeline[index][1]];
+                nums[timeline[index][1]] = temp
+                this.setState({ nums: [...nums] });
+                await new Promise(resolve => setTimeout(resolve, 500));
             }
 
-            i++;
-            setTimeout(() => selectSort(i), this.state.delay);
+            index++;
+            if (index > timeline.length - 1) {
+                break;
+            }
         }
-
-        selectSort(0);
-    }
-
-    handleInsertionSort() {
-        let sorted = this.state.nums;
-        let highlight = this.state.highlighted;
-        let temp;
-        let index;
-
-        this.generateHighlight(this.state.nums);
-
-        if (sorted[1] < sorted[0]) {
-            temp = sorted[1];
-            sorted[1] = sorted[0];
-            sorted[0] = temp;
-        }
-
-        let findIndex = (i, end) => {
-            if (i > end) {
-                return i;
-            }
-
-            if (sorted[end] < sorted[i]) {
-                return i;
-            }
-
-            i++;
-            return findIndex(i, end)
-        }
-
-        let pushElements = (i, index) => {
-            if (i < index) {
-                return;
-            }
-
-            sorted[i] = sorted[i-1];
-            this.setState({nums: sorted});
-
-            i--;
-            return pushElements(i, index);
-        }
-
-        let insertionSort = (i) => {
-            if (i > sorted.length - 1) {
-                for (let j = 0; j < highlight.length; j++) {
-                    highlight[j] = 0;
-                }
-                this.setState({highlighted: highlight});
-                return;
-            }
-            if (sorted[i] < sorted[i-1]) {
-                index = findIndex(0, i);
-                temp = sorted[i];
-                pushElements(i, index);
-                sorted[index] = temp;
-                this.setState({nums: sorted});
-            }
-
-            i++;
-            setTimeout(() => insertionSort(i), this.state.delay);
-        }
-
-        insertionSort(2);
+        this.zeroHighlight(nums);
     }
 
     render () {
+        const { 
+            handleRandomClick, 
+            handleMaxSampleSizeInput, 
+            handleSelectSort, 
+            handleTestSort,
+            handleInsertionSort 
+        } = this;
+
+        const {
+            nums,
+            maxSampleSize,
+            highlighted,
+        } = this.state;
 
         return(
             <div class="container body-container">
                 <div class="row home-flex">
                     <div class="col-6 col-flex">
                         <span>Array Size: </span>
-                        <input type="number" value={this.state.maxSampleSize} onChange={this.handleMaxSampleSizeInput} />
-                        <button class="visualizer-button-format" onClick={this.handleRandomClick}>Randomize</button>
+                        <input 
+                            type="number" 
+                            value={maxSampleSize} 
+                            onChange={handleMaxSampleSizeInput} 
+                        />
+                        <button 
+                            class="visualizer-button-format" 
+                            onClick={handleRandomClick}
+                        >
+                            Randomize
+                        </button>
                     </div>
                     <div class="col-6 col-flex">
-                        <button class="visualizer-button-format" onClick={this.handleTestSort}>Bubble</button>
-                        <button class="visualizer-button-format" onClick={this.handleSelectSort}>Select</button>
-                        <button class="visualizer-button-format" onClick={this.handleInsertionSort}>Insertion</button>
+                        <button class="visualizer-button-format" onClick={handleTestSort}>Bubble</button>
+                        <button class="visualizer-button-format" onClick={handleSelectSort}>Select</button>
+                        <button class="visualizer-button-format" onClick={handleInsertionSort}>Insertion</button>
                     </div>
                 </div>
-                <Visualizer array={this.state.nums} highlighted={this.state.highlighted} />
+                <Visualizer 
+                    array={nums} 
+                    highlighted={highlighted}
+                />
             </div>
         )
     }
@@ -282,3 +127,5 @@ class Home extends Component {
 }
 
 export default Home;
+/*
+*/
