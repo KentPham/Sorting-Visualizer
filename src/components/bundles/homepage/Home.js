@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import "./Home.css";
 import Visualizer from "../visualizer";
 import { bubblesort } from "../sorts/Bubblesort";
+import { selectsort } from "../sorts/Selectsort";
 import { insertionsort } from "../sorts/Insertionsort";
 
 class Home extends Component {
@@ -9,7 +10,7 @@ class Home extends Component {
     state = {
         nums: [],
         highlighted: [],
-        speed: 10,
+        speed: 100,
         maxSampleSize: 10,
     }
 
@@ -81,6 +82,49 @@ class Home extends Component {
     }
 
     handleSelectSort = async () => {
+        let timeline;
+        let temp;
+        let index = 0;
+        const { nums } = this.state;
+        this.zeroHighlight(nums);
+        let highlighted = [...this.state.highlighted];
+        timeline = selectsort(nums);
+
+        while (true) {
+            this.zeroHighlight(nums);
+            highlighted = [...this.state.highlighted];
+            if (timeline[index][1] === -1) {
+                highlighted[timeline[index][0]] = 1;
+                highlighted[timeline[index][4]] = 2;
+                highlighted[timeline[index][3]] = 2;
+                this.setState({ highlighted: [...highlighted] });
+
+                await new Promise(resolve => setTimeout(resolve, this.state.speed));
+
+            } else {
+                highlighted[timeline[index][0]] = 1;
+                highlighted[timeline[index][1]] = 1;
+                this.setState({ highlighted: [...highlighted] });
+                
+                await new Promise(resolve => setTimeout(resolve, this.state.speed));
+
+                temp = nums[timeline[index][0]];
+                nums[timeline[index][0]] = nums[timeline[index][1]];
+                nums[timeline[index][1]] = temp
+                this.setState({ nums: [...nums] });
+
+                await new Promise(resolve => setTimeout(resolve, this.state.speed));
+            }
+
+            index++;
+            if (index > timeline.length - 1) {
+                break;
+            }
+        }
+        this.zeroHighlight(nums);
+    }
+
+    handleInsertionSort = async () => {
         let timeline;
         let index = 0;
         let iHolder = -1;
@@ -154,12 +198,6 @@ class Home extends Component {
         this.zeroHighlight(nums);
     }
 
-    handleInsertionSort = async () => {
-
-        // while (true) {
-
-        // }
-    }
 
     render () {
         const { 
